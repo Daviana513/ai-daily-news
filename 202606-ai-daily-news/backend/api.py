@@ -4,8 +4,7 @@
 AI Daily News API Server
 每日AI资讯日报推送系统 - 后端API
 """
-
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import os
 import json
@@ -23,7 +22,16 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)  # 允许跨域请求
+# 提供前端静态文件
+FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
 
+@app.route('/')
+def serve_index():
+    return send_from_directory(FRONTEND_DIR, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(FRONTEND_DIR, path)
 # 全局变量存储最新日报
 latest_daily_news = None
 last_update_time = None
