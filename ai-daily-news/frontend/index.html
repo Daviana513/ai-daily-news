@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智羿 - AI Makes Sense</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #666666;
+            --accent-gradient: linear-gradient(135deg, #7B6FE8 0%, #4FC3F7 100%);
+            --accent-solid: #7B6FE8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --blur-strength: 20px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 背景字符流 */
+        .bg-char-stream {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .char-column {
+            position: absolute;
+            top: 0;
+            font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            white-space: pre;
+            line-height: 1.4;
+            animation: scrollDown linear infinite;
+        }
+
+        @keyframes scrollDown {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(var(--blur-strength));
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 48px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-cta {
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-cta:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-solid);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        /* Hero区域 */
+        .hero {
+            padding: 120px 48px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 120px;
+            font-weight: 800;
+            line-height: 0.9;
+            margin-bottom: 32px;
+            letter-spacing: -4px;
+        }
+
+        .hero-title-line {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .hero-title .ai {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title .subtitle {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            right: -12px;
+            width: 12px;
+            height: 4px;
+            background: var(--accent-gradient);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 64px;
+            font-weight: 400;
+        }
+
+        /* 数据栏 */
+        .data-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            position: relative;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        /* 竖向分隔线 */
+        .data-item::before,
+        .data-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .data-item::before {
+            left: 0;
+        }
+
+        .data-item::after {
+            right: 0;
+        }
+
+        /* 第一项只有右侧分隔线 */
+        .data-item:first-child::before {
+            display: none;
+        }
+
+        /* 最后一项只有左侧分隔线 */
+        .data-item:last-child::after {
+            display: none;
+        }
+
+        .data-number {
+            font-size: 48px;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .data-number.process-flow {
+            font-size: 32px;
+            letter-spacing: -0.5px;
+        }
+
+        .data-arrow {
+            color: rgba(255, 255, 255, 0.4);
+            margin: 0 4px;
+        }
+
+        .data-label {
+            font-size: 17px;
+            color: var(--text-primary);
+            opacity: 0.5;
+            font-weight: 400;
+        }
+
+        /* 主功能区 */
+        .main-function {
+            padding: 80px 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .function-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 48px;
+            backdrop-filter: blur(var(--blur-strength));
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .current-date {
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        /* 生成按钮 */
+        .generate-btn {
+            width: 100%;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .generate-btn:hover {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(123, 111, 232, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .arrow-icon {
+            transition: transform var(--transition-speed);
+        }
+
+        .generate-btn:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+
+        /* 加载状态 */
+        .loading-state {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .loading-state.active {
+            display: block;
+        }
+
+        .skeleton {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 24px;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background: var(--bg-secondary); }
+            50% { background: rgba(255, 255, 255, 0.05); }
+            100% { background: var(--bg-secondary); }
+        }
+
+        .skeleton-title {
+            height: 24px;
+            width: 60%;
+            margin-bottom: 16px;
+        }
+
+        .skeleton-summary {
+            height: 16px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-detail {
+            height: 16px;
+            width: 80%;
+        }
+
+        /* 简报内容 */
+        .briefing-content {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .briefing-content.active {
+            display: block;
+        }
+
+        .briefing-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: all var(--transition-speed);
+        }
+
+        .briefing-item:hover {
+            border-color: var(--accent-solid);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(123, 111, 232, 0.2);
+        }
+
+        .item-number {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .item-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .item-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        .item-title a:hover {
+            color: var(--accent-solid);
+        }
+
+        .item-summary {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .item-detail {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .item-source {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .item-source a {
+            color: var(--accent-solid);
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        .item-source a:hover {
+            color: #4FC3F7;
+        }
+
+        /* 错误状态 */
+        .error-state {
+            display: none;
+            margin-top: 40px;
+            padding: 32px;
+            background: rgba(255, 0, 0, 0.05);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 12px;
+            color: #ff6b6b;
+        }
+
+        .error-state.active {
+            display: block;
+        }
+
+        .error-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 底部 */
+        .footer {
+            padding: 48px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-tertiary);
+            font-size: 14px;
+        }
+
+        .footer-slogan {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 16px 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 80px 24px 48px;
+            }
+
+            .hero-title {
+                font-size: 64px;
+                letter-spacing: -2px;
+            }
+
+            .data-bar {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .main-function {
+                padding: 48px 24px;
+            }
+
+            .function-card {
+                padding: 24px;
+            }
+
+            .footer {
+                padding: 24px;
+            }
+        }
+
+        /* 深色模式优化 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #0a0a0a;
+                --bg-secondary: #141414;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景字符流 -->
+    <div class="bg-char-stream" id="bgCharStream"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <img src="logo.png" alt="智羿">
+        </a>
+        <ul class="nav-links">
+            <li><a href="#" class="active"></a></li>
+            <!-- <li><a href="#">用户指南</a></li> -->
+        </ul>
+        <a href="#" class="nav-cta" onclick="scrollToGenerate()">
+            日报生成 →
+        </a>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- Hero区域 -->
+        <section class="hero">
+            <h1 class="hero-title">
+                <span class="hero-title-line ai">AI</span>
+                <span class="hero-title-line subtitle">Makes Sense_</span>
+            </h1>
+            <p class="hero-subtitle">每天三分钟，读懂AI下一程</p>
+
+            <div class="data-bar">
+                <div class="data-item">
+                    <div class="data-number">3分钟</div>
+                    <div class="data-label">每日阅读时长</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-number">5条</div>
+                    <div class="data-label">精选AI要闻</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-number">全域采集</div>
+                    <div class="data-label">纵观国内外动态</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主功能区 -->
+        <section class="main-function">
+            <div class="function-card">
+                <!-- 状态栏 -->
+                <div class="status-bar">
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span id="statusText">智羿已就绪</span>
+                    </div>
+                    <div class="current-date" id="currentDate"></div>
+                </div>
+
+                <!-- 生成按钮 -->
+                <button class="generate-btn" id="generateBtn" onclick="generateBriefing()">
+                    生成今日日报
+                    <span class="arrow-icon">→</span>
+                </button>
+
+                <!-- 加载状态 -->
+                <div class="loading-state" id="loadingState">
+                    <div class="skeleton">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-summary"></div>
+                        <div class="skeleton-detail"></div>
+                    </div>
+                    <div class="skeleton">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-summary"></div>
+                        <div class="skeleton-detail"></div>
+                    </div>
+                    <div class="skeleton">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-summary"></div>
+                        <div class="skeleton-detail"></div>
+                    </div>
+                </div>
+
+                <!-- 简报内容 -->
+                <div class="briefing-content" id="briefingContent"></div>
+
+                <!-- 错误状态 -->
+                <div class="error-state" id="errorState">
+                    <div class="error-title">生成失败</div>
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="footer-slogan">读懂AI动态，抓住未来脉搏</div>
+        <div class="footer-copyright">© 2026 智羿 · All Rights Reserved</div>
+    </footer>
+
+    <script>
+        // 配置
+        const CONFIG = {
+            API_BASE_URL: 'http://localhost:5000',
+            BG_TERMS: [
+                'Transformer', 'inference', 'neural net', 'attention', 'token',
+                'embedding', 'gradient', 'GPT', 'diffusion', 'RLHF', 'latency',
+                'fine-tune', 'prompt', 'context', 'weights', 'softmax', 'backprop',
+                'multimodal', 'benchmark', 'hallucination'
+            ],
+            COLUMN_WIDTH: 80,  // 每列宽度
+            MIN_SPEED: 20,     // 最快滚动时间（秒）
+            MAX_SPEED: 40,     // 最慢滚动时间（秒）
+            MIN_OPACITY: 0.06, // 最小透明度
+            MAX_OPACITY: 0.12, // 最大透明度
+            MIN_FONT_SIZE: 11, // 最小字号
+            MAX_FONT_SIZE: 13  // 最大字号
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initBgCharStream();
+            updateCurrentDate();
+        });
+
+        // 背景字符流
+        function initBgCharStream() {
+            console.log('初始化背景字符流...');
+            const container = document.getElementById('bgCharStream');
+            console.log('字符流容器:', container);
+
+            // 清空现有内容
+            container.innerHTML = '';
+
+            // 根据屏幕宽度计算列数
+            const screenWidth = window.innerWidth;
+            const numColumns = Math.floor(screenWidth / CONFIG.COLUMN_WIDTH);
+            console.log('屏幕宽度:', screenWidth, '列数:', numColumns);
+
+            // 生成每列字符流
+            for (let i = 0; i < numColumns; i++) {
+                const column = document.createElement('div');
+                column.className = 'char-column';
+
+                // 随机位置
+                const xPos = (i / numColumns) * 100;
+                column.style.left = `${xPos}%`;
+
+                // 随机透明度
+                const opacity = CONFIG.MIN_OPACITY + Math.random() * (CONFIG.MAX_OPACITY - CONFIG.MIN_OPACITY);
+                column.style.color = `rgba(255, 255, 255, ${opacity.toFixed(3)})`;
+
+                // 随机字号
+                const fontSize = CONFIG.MIN_FONT_SIZE + Math.random() * (CONFIG.MAX_FONT_SIZE - CONFIG.MIN_FONT_SIZE);
+                column.style.fontSize = `${fontSize.toFixed(1)}px`;
+
+                // 随机滚动速度
+                const duration = CONFIG.MIN_SPEED + Math.random() * (CONFIG.MAX_SPEED - CONFIG.MIN_SPEED);
+                column.style.animationDuration = `${duration.toFixed(1)}s`;
+
+                // 随机起始偏移（负值，让初始状态分散）
+                const delay = -Math.random() * duration;
+                column.style.animationDelay = `${delay.toFixed(1)}s`;
+
+                // 生成术语文本（重复多次确保滚动时有足够内容）
+                let termText = '';
+                const numRepeats = 100; // 重复次数
+                for (let j = 0; j < numRepeats; j++) {
+                    const randomTerm = CONFIG.BG_TERMS[Math.floor(Math.random() * CONFIG.BG_TERMS.length)];
+                    termText += randomTerm + '\n';
+                }
+                column.textContent = termText;
+
+                container.appendChild(column);
+            }
+            console.log('字符流初始化完成，共生成', numColumns, '列');
+        }
+
+        // 窗口大小改变时重新生成字符流
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                initBgCharStream();
+            }, 250);
+        });
+
+        // 更新当前日期
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+
+        // 滚动到生成区域
+        function scrollToGenerate() {
+            document.querySelector('.main-function').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 生成简报
+        async function generateBriefing() {
+            const btn = document.getElementById('generateBtn');
+            const loadingState = document.getElementById('loadingState');
+            const briefingContent = document.getElementById('briefingContent');
+            const errorState = document.getElementById('errorState');
+            const statusText = document.getElementById('statusText');
+
+            // 重置状态
+            btn.disabled = true;
+            loadingState.classList.add('active');
+            briefingContent.classList.remove('active');
+            errorState.classList.remove('active');
+            statusText.textContent = '智羿生成中...';
+
+            try {
+                // 调用API
+                console.log('开始API请求，URL:', `${CONFIG.API_BASE_URL}/api/generate-daily-news`);
+
+                // 添加超时控制
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 120000); // 2分钟超时
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/api/generate-daily-news`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        date: new Date().toISOString().split('T')[0] // 发送今天的日期
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                console.log('API响应状态:', response.status, response.statusText);
+
+                if (!response.ok) {
+                    console.error('请求失败，状态码:', response.status);
+                    const errorText = await response.text();
+                    console.error('错误响应:', errorText);
+                    throw new Error(`网络请求失败 (${response.status})`);
+                }
+
+                const result = await response.json();
+                console.log('API返回结果:', result);
+
+                if (result.success) {
+                    displayBriefing(result.data);
+                    statusText.textContent = '智羿已完成';
+                } else {
+                    throw new Error(result.error || '生成失败');
+                }
+
+            } catch (error) {
+                console.error('生成简报失败:', error);
+                console.error('错误堆栈:', error.stack);
+
+                // 处理超时错误
+                if (error.name === 'AbortError') {
+                    showError('请求超时，请稍后重试');
+                } else {
+                    showError(error.message || '网络连接失败');
+                }
+                statusText.textContent = '智羿连接异常';
+            } finally {
+                btn.disabled = false;
+                loadingState.classList.remove('active');
+            }
+        }
+
+        // 显示简报内容
+        function displayBriefing(data) {
+            const container = document.getElementById('briefingContent');
+
+            // 转换数据格式
+            const items = [];
+
+            if (data.top5 && data.top5.length > 0) {
+                data.top5.forEach((item, index) => {
+                    items.push({
+                        id: index + 1,
+                        title: item.title,
+                        summary: item.summary,
+                        detail: item.why_important || '',
+                        source: 'AI资讯',
+                        url: item.source_url || item.url || ''
+                    });
+                });
+            }
+
+            if (items.length === 0) {
+                showError('暂无新闻内容');
+                return;
+            }
+
+            let html = '';
+            items.forEach(item => {
+                const numberStr = String(item.id).padStart(2, '0');
+                const hasUrl = item.url && item.url !== 'N/A' && item.url !== '';
+
+                html += `
+                    <div class="briefing-item">
+                        <span class="item-number">${numberStr}</span>
+                        <div class="item-title">
+                            ${hasUrl ? `<a href="${item.url}" target="_blank">${item.title}</a>` : item.title}
+                        </div>
+                        <div class="item-summary">⚡ ${item.summary}</div>
+                        <div class="item-detail">📖 ${item.detail}</div>
+                        <div class="item-source">
+                            来源：${item.source}
+                            ${hasUrl ? `<a href="${item.url}" target="_blank">阅读原文 →</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 添加洞察部分
+            if (data.insight) {
+                html += `
+                    <div class="briefing-item">
+                        <span class="item-number">洞察</span>
+                        ${data.insight.trend ? `<div class="item-detail">📈 趋势：${data.insight.trend}</div>` : ''}
+                        ${data.insight.risk ? `<div class="item-detail">⚠️ 风险：${data.insight.risk}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            container.classList.add('active');
+        }
+
+        // 显示错误
+        function showError(message) {
+            const errorState = document.getElementById('errorState');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorState.classList.add('active');
+        }
+    </script>
+</body>
+</html>

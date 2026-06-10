@@ -1,0 +1,185 @@
+{
+  "test_timestamp": "2026-05-31T11:01:35.732269",
+  "architecture": "NewsAPI + Qwen-Plus Hybrid",
+  "raw_news_count": 20,
+  "final_result": {
+    "date": "2026年5月31日",
+    "audience": "非专业人士",
+    "top5": [
+      {
+        "id": 1,
+        "title": "OpenAI给AI大脑‘装了纠错眼镜’，看病、打官司、算账更靠谱了",
+        "summary": "GPT-5.5 Instant升级后，乱说错话（幻觉）少了超一半，尤其在医生、律师、银行这些不能出错的地方。",
+        "why_important": "以后用AI查病情、看合同、理财，错误更少，你更敢信、更敢用，工作和生活都更省心。"
+      },
+      {
+        "id": 2,
+        "title": "ChatGPT Pro现在能帮你管钱：连上银行卡，自动分析花哪了、该存多少",
+        "summary": "授权后，它能看你的银行流水，生成省钱建议——像请了个懂财务的贴心管家。",
+        "why_important": "普通人也能轻松做预算、防透支；但要注意：把银行卡密码交给AI，就像把钱包交给别人保管，得想清楚安不安全。"
+      },
+      {
+        "id": 3,
+        "title": "国内一家做AI‘大脑’的公司（MiniMax）准备在A股上市，想当‘中国AI第一股’",
+        "summary": "这家公司已在香港上市，现在又冲刺内地股市，说明国家和市场都很看好国产AI。",
+        "why_important": "如果它成功上市，可能带动更多AI公司发展，未来你用的手机、APP、客服背后的AI，很可能就来自这类中国公司。"
+      },
+      {
+        "id": 4,
+        "title": "黑客假装ChatGPT‘坏了’，骗你点广告下载病毒，连官方网址都冒充",
+        "summary": "骗子用ChatGPT的域名做假页面，再通过谷歌搜索把你‘精准钓’过去，像钓鱼邮件升级版。",
+        "why_important": "你平时搜‘ChatGPT打不开’时，可能点进真网址里的假页面——钱包、账号、密码都有风险，得更小心点链接。"
+      },
+      {
+        "id": 5,
+        "title": "Meta买了家做AI小挂件的公司，以后戴个项链就能语音问健康、记事提醒",
+        "summary": "这不是耳机，是能离线听你说话、感知你状态的智能小挂件，像随身带了个安静的AI助理。",
+        "why_important": "以后不用掏手机，抬抬手、说句话，AI就能提醒吃药、测心率、记待办——对老人、忙人、健忘党很实用。"
+      }
+    ],
+    "digest_table": [
+      {
+        "id": 1,
+        "category": "模型更新",
+        "title": "OpenAI升级GPT-5.5 Instant模型，AI回复更自然、易读",
+        "importance": "高"
+      },
+      {
+        "id": 2,
+        "category": "AI应用",
+        "title": "ChatGPT可以管理你的钱包和银行账户：OpenAI推出个人财务工具",
+        "importance": "高"
+      },
+      {
+        "id": 3,
+        "category": "资本动态",
+        "title": "MiniMax签署辅导协议，正式启动A股IPO进程",
+        "importance": "高"
+      },
+      {
+        "id": 4,
+        "category": "安全事件",
+        "title": "LLMShare攻击披露：ChatGPT共享页变恶意入口，通过谷歌搜索精准投毒",
+        "importance": "高"
+      },
+      {
+        "id": 5,
+        "category": "硬件与终端",
+        "title": "Meta收购Limitless AI pendant maker作为雄心勃勃的可穿戴设备推进的一部分",
+        "importance": "高"
+      },
+      {
+        "id": 6,
+        "category": "模型评估",
+        "title": "新工具上线：帮开发者检查AI是否‘偏心’或‘带情绪’（比如歧视某类人）",
+        "importance": "中"
+      },
+      {
+        "id": 7,
+        "category": "开发工具",
+        "title": "新编程助手上线：让程序员写代码时更顺手，像给键盘加了智能联想",
+        "importance": "中"
+      },
+      {
+        "id": 8,
+        "category": "基础设施",
+        "title": "亚马逊云推出AI监控工具：能看清AI‘思考’时卡在哪、为啥答错",
+        "importance": "中"
+      },
+      {
+        "id": 9,
+        "category": "模型评估",
+        "title": "有人用数学证明法验证AI画图是否准确：以前总画歪的多边形，这次一次就对了",
+        "importance": "中"
+      },
+      {
+        "id": 10,
+        "category": "AI应用",
+        "title": "你的手机变遥控器：OpenAI让AI能远程操作Windows电脑（比如开软件、传文件）",
+        "importance": "中"
+      },
+      {
+        "id": 11,
+        "category": "模型争议",
+        "title": "有AI被质疑‘抄作业’：它的‘老实回答’可能不是真懂，而是背了别人答案",
+        "importance": "中"
+      },
+      {
+        "id": 12,
+        "category": "硬件与终端",
+        "title": "荣耀8月发‘机器人手机’：自带可伸缩机械臂，能自动转圈拍你",
+        "importance": "中"
+      },
+      {
+        "id": 13,
+        "category": "无关内容",
+        "title": "一把钛合金小刀，比AirPods盒子还轻，号称能用一辈子",
+        "importance": "低"
+      },
+      {
+        "id": 14,
+        "category": "无关内容",
+        "title": "Pluto TV六月片单来了：392部新电影电视剧上线",
+        "importance": "低"
+      },
+      {
+        "id": 15,
+        "category": "无关内容",
+        "title": "泡泡玛特股价大涨，段永平一天赚10亿",
+        "importance": "低"
+      },
+      {
+        "id": 16,
+        "category": "无关内容",
+        "title": "三星新款手表系统更新后，健康数据可能真正有用起来",
+        "importance": "低"
+      },
+      {
+        "id": 17,
+        "category": "无关内容",
+        "title": "一个叫endpoint-vps的网络工具上线PyPI（程序员常用平台）",
+        "importance": "低"
+      },
+      {
+        "id": 18,
+        "category": "无关内容",
+        "title": "一家给富士康供货的机器人公司，半年赚两千多万，刚拿到天使轮融资",
+        "importance": "低"
+      },
+      {
+        "id": 19,
+        "category": "无关内容",
+        "title": "马斯克说的话和SpaceX上市文件不一致，投资人更担心了",
+        "importance": "低"
+      },
+      {
+        "id": 20,
+        "category": "无关内容",
+        "title": "特斯拉FSD自动驾驶被车主起诉欺诈案，国内开庭",
+        "importance": "低"
+      }
+    ],
+    "further_reading": [
+      {
+        "title": "Claude Opus 4.8初步上手：能力升级不算大，它的'诚实'值得打个问号",
+        "url": "https://www.cnbeta.com.tw/articles/tech/1564064.htm"
+      },
+      {
+        "title": "亚马逊云AI监控工具详解：从显卡发热到AI答错，全都能看见",
+        "url": "https://aws.amazon.com/blogs/machine-learning/comprehensive-observability-for-amazon-sagemaker-ai-llm-inference-from-gpu-utilization-to-llm-quality/"
+      },
+      {
+        "title": "用数学证明AI画图不翻车：多边形相交问题终于被严格验证",
+        "url": "https://github.com/schildep/verified-polygon-intersection"
+      },
+      {
+        "title": "你的手机变遥控器：OpenAI让AI远程操控Windows 10/11电脑",
+        "url": "https://www.ithome.com/0/957/422.htm"
+      }
+    ],
+    "insight": {
+      "trend": "AI正在悄悄变‘稳’：不再只比谁说得快、谁画得炫，而是比谁更准（医疗法律）、更懂你（钱包挂件）、更安全（防钓鱼）、更被市场认可（上市）。就像汽车从‘能跑’进化到‘刹得住、坐得稳、不撞人’。",
+      "risk": "坏人开始利用大家对AI的信任搞诈骗——比如用正规网站地址做假页面，再靠搜索引擎把你‘请’进去。这就像骗子穿了警察制服，在派出所门口发假传单，特别难防。你的手机、银行卡、健康信息，都得更留神。"
+    }
+  }
+}
